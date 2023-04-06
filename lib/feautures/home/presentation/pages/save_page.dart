@@ -37,17 +37,18 @@ class SaveForm extends StatefulWidget {
 
 class _SaveFormState extends State<SaveForm> {
   final _formKey = GlobalKey<FormState>();
-
+ List courts = ["Cancha grande", "Cancha media", "Cancha peque"];
+    TextEditingController dateInput = TextEditingController(text: '');
+    TextEditingController userInput = TextEditingController(text: '');
+    TextEditingController courtInput = TextEditingController(text: '');
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    List courts = ["Cancha grande", "Cancha media", "Cancha peque"];
-    TextEditingController dateInput = TextEditingController(text: '');
+   
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
@@ -58,9 +59,9 @@ class _SaveFormState extends State<SaveForm> {
             child: Column(
               children: [
                 TextFormFieldCustom(
+                  controller: userInput,
                   hintText: 'Nombre del responsable',
-                  onChanged: (value) {},
-                  labelText: '',
+                                  labelText: '',
                 ),
                 SizedBox(
                   width: double.infinity,
@@ -85,6 +86,7 @@ class _SaveFormState extends State<SaveForm> {
                     onChanged: (String? newValue) {
                       setState(() {
                         //ropdownvalue = newValue!;
+                        courtInput.text = newValue ?? '';
                       });
                     },
                   ),
@@ -120,10 +122,10 @@ class _SaveFormState extends State<SaveForm> {
                     width: double.infinity,
                     child: ElevatedButton(
                         onPressed: () {
-                          context.read<HomeBloc>().add(SaveCourtStarted(
-                              Court(court: 'de', date: 'h', user: 'Pedro')));
-
-                          
+                          context.read<HomeBloc>().add(SaveCourtStarted(Court(
+                              court: courtInput.text,
+                              date: dateInput.text,
+                              user: userInput.text)));
                           Navigator.pop(context);
                         },
                         child: const Text('Guardar')))

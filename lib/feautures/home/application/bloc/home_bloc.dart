@@ -15,9 +15,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc({required this.courtStore}) : super(const HomeState.initial()) {
     on<HomeStarted>(getData);
     on<SaveCourtStarted>(saveData);
-  
+    on<DeleteStarted>(deleteData);
   }
-   Court court=Court();
+  Court court = Court();
 
   FutureOr<void> getData(HomeStarted event, Emitter<HomeState> emit) async {
     emit(const HomeState.loading());
@@ -30,28 +30,37 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     );
   }
 
-  FutureOr<void> saveData(SaveCourtStarted event, Emitter<HomeState> emit) async {
-
+  FutureOr<void> saveData(
+      SaveCourtStarted event, Emitter<HomeState> emit) async {
     emit(const HomeState.loading());
 
-      final stateSave = await courtStore.save(event.court);
-    
-   if(stateSave.isRight()){
-    final state = await courtStore.findAll();
-    emit(
-      state.fold(
-        (error) => HomeState.error(failure: error),
-        (data) => HomeState.data(news: data),
-      ),
-    );
-   }
+    final stateSave = await courtStore.save(event.court);
 
-    
+    if (stateSave.isRight()) {
+      final state = await courtStore.findAll();
+      emit(
+        state.fold(
+          (error) => HomeState.error(failure: error),
+          (data) => HomeState.data(news: data),
+        ),
+      );
+    }
   }
-  
-  
 
+  FutureOr<void> deleteData(
+      DeleteStarted event, Emitter<HomeState> emit) async {
+    emit(const HomeState.loading());
 
+    final stateDelete = await courtStore.delete(event.court);
 
- 
+    if (stateDelete.isRight()) {
+      final state = await courtStore.findAll();
+      emit(
+        state.fold(
+          (error) => HomeState.error(failure: error),
+          (data) => HomeState.data(news: data),
+        ),
+      );
+    }
+  }
 }

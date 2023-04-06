@@ -15,11 +15,10 @@ class CardWidget extends StatefulWidget {
 }
 
 class _CardWidgetState extends State<CardWidget> {
-@override
+  @override
   void initState() {
-  
     super.initState();
-     context.read<HomeBloc>().add(HomeStarted());
+    context.read<HomeBloc>().add(HomeStarted());
   }
 
   @override
@@ -28,12 +27,12 @@ class _CardWidgetState extends State<CardWidget> {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         return state.when(
-          save: (b)=>const SizedBox(),
+            save: (b) => const SizedBox(),
             initial: () => const SizedBox(child: Center(child: Text('data'))),
             loading: () => const CircularProgressIndicator(),
             data: (data) => Padding(
-              padding: const EdgeInsets.only(left: 15,right: 15,top: 25),
-              child: Column(
+                  padding: const EdgeInsets.only(left: 15, right: 15, top: 25),
+                  child: Column(
                     children: data
                         .map(
                           (e) => Center(
@@ -42,30 +41,40 @@ class _CardWidgetState extends State<CardWidget> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
                                   ListTile(
-                                    leading: const Icon(Icons.album),
-                                    title: Text(e.court ?? ''),
+                                    leading: const Padding(
+                                      padding: EdgeInsets.only(top: 30),
+                                      child: Icon(
+                                        Icons.check_circle_outline,
+                                        size: 40,
+                                      ),
+                                    ),
                                     subtitle: Column(
                                       children: [
                                         Text(e.user ?? ''),
+                                        Text(e.court ?? ''),
                                         Text(e.date ?? ''),
                                       ],
                                     ),
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      TextButton(
-                                        child: const Text('BUY TICKETS'),
-                                        onPressed: () {/* ... */},
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            bottom: 10, right: 10),
+                                        child: ElevatedButton(
+                                          child: const Text(
+                                              'Borrar el agendamiento'),
+                                          onPressed: () {
+                                            context.read<HomeBloc>().add(
+                                                  DeleteStarted(e),
+                                                );
+                                          },
+                                        ),
                                       ),
-                                      const SizedBox(width: 8),
-                                      TextButton(
-                                        child: const Text('LISTEN'),
-                                        onPressed: () {/* ... */},
-                                      ),
-                                      const SizedBox(width: 8),
                                     ],
                                   ),
+                                  const SizedBox(width: 8),
                                 ],
                               ),
                             ),
@@ -73,7 +82,7 @@ class _CardWidgetState extends State<CardWidget> {
                         )
                         .toList(),
                   ),
-            ),
+                ),
             error: (error) {
               return Text(error.message);
             });

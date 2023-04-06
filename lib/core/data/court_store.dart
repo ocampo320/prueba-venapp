@@ -8,14 +8,13 @@ import 'package:sembast/sembast.dart';
 import 'package:dartz/dartz.dart';
 
 class CourtStore {
-   static const String _STORE_NAME = "book_data";
+  static const String _STORE_NAME = "book_data";
 
-   final _store = intMapStoreFactory.store(_STORE_NAME);
+  final _store = intMapStoreFactory.store(_STORE_NAME);
 
-   Future<Database> get _db async =>
-      await LocalDatabase.instance.database;
+  Future<Database> get _db async => await LocalDatabase.instance.database;
 
-   Future<Either<CommonFailure, bool>> save(Court entity) async {
+  Future<Either<CommonFailure, bool>> save(Court entity) async {
     try {
       await _store.add(await _db, entity.toJson());
       debugPrint(
@@ -32,7 +31,7 @@ class CourtStore {
     );
   }
 
-   Future<Either<CommonFailure, List<Court>>> findAll() async {
+  Future<Either<CommonFailure, List<Court>>> findAll() async {
     try {
       final snapshot = await _store.find(await _db);
       debugPrint(
@@ -43,11 +42,15 @@ class CourtStore {
     }
   }
 
-  Future<bool> delete(Court entity) async {
-    debugPrint("DELETING $entity");
-    final finder = Finder(filter: Filter.equals('user', entity.user));
-    await _store.delete(await _db, finder: finder);
-    await findAll();
-    return true;
+  Future<Either<CommonFailure, bool>> delete(Court entity) async {
+    try {
+      debugPrint("DELETING $entity");
+      final finder = Finder(filter: Filter.equals('user', entity.user));
+      await _store.delete(await _db, finder: finder);
+      await findAll();
+      return right(true);
+    } catch (e) {
+      return left(CommonFailure.data(message: e.toString()));
+    }
   }
 }

@@ -18,3 +18,10 @@ class SaveCourtStarted extends HomeEvent {
   @override
   List<Object?> get props => [];
 }
+class DeleteStarted extends HomeEvent {
+  final Court court;
+
+  const DeleteStarted(this.court);
+  @override
+  List<Object?> get props => [];
+}
