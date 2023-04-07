@@ -3,6 +3,7 @@ import 'package:kncha_app/feautures/home/application/bloc/home_bloc.dart';
 import 'package:kncha_app/feautures/home/application/bloc/home_event.dart';
 import 'package:kncha_app/feautures/home/application/bloc/home_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kncha_app/feautures/home/domain/models/court.dart';
 
 class CardWidget extends StatefulWidget {
   const CardWidget({super.key, this.nameCourt, this.date, this.userName});
@@ -48,31 +49,33 @@ class _CardWidgetState extends State<CardWidget> {
                                         size: 40,
                                       ),
                                     ),
-                                    subtitle: Column(
-                                      children: [
-                                        Text(e.user ?? ''),
-                                        Text(e.court ?? ''),
-                                        Text(e.date ?? ''),
-                                      ],
+                                    subtitle: Center(
+                                      child: Column(
+                                        children: [
+                                          Text(e.user ?? ''),
+                                          Text(e.court ?? ''),
+                                          Text(e.date ?? ''),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            bottom: 10, right: 10),
-                                        child: ElevatedButton(
-                                          child: const Text(
-                                              'Borrar el agendamiento'),
-                                          onPressed: () {
-                                            context.read<HomeBloc>().add(
-                                                  DeleteStarted(e),
-                                                );
-                                          },
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 50),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              bottom: 10, right: 10),
+                                          child: ElevatedButton(
+                                            child: const Text(
+                                                'Borrar el agendamiento'),
+                                            onPressed: ()=>showAlertDialog(context,e),
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                   const SizedBox(width: 8),
                                 ],
@@ -89,4 +92,34 @@ class _CardWidgetState extends State<CardWidget> {
       },
     );
   }
+}
+
+showAlertDialog(BuildContext context, Court e) {
+  // set up the button
+  Widget okButton = TextButton(
+    child: Text("OK"),
+    onPressed: () {
+      context.read<HomeBloc>().add(
+            DeleteStarted(e),
+          );
+      Navigator.pop(context);
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text("Alerta"),
+    content: Text("Esta seguro de  borrar el agendamiento."),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }

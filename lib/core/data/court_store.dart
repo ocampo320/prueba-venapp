@@ -42,6 +42,18 @@ class CourtStore {
     }
   }
 
+  Future<Either<CommonFailure, List<Court>>> findByCourt(String nameCourt) async {
+    
+    try {
+      final snapshot = await _store.find(await _db,finder: Finder(filter: Filter.equals('court', nameCourt)));
+      debugPrint(
+          "--------Consulta en la BD local----------" + snapshot.toString());
+      return right(snapshot.map((e) => Court.fromJson(e.value)).toList());
+    } catch (e) {
+      return left(CommonFailure.data(message: e.toString()));
+    }
+  }
+
   Future<Either<CommonFailure, bool>> delete(Court entity) async {
     try {
       debugPrint("DELETING $entity");

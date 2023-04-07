@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:kncha_app/feautures/home/application/bloc/home_bloc.dart';
 import 'package:kncha_app/feautures/home/application/bloc/home_event.dart';
 import 'package:kncha_app/feautures/home/application/bloc/home_state.dart';
-import 'package:kncha_app/feautures/home/application/bloc/save_bloc/save_event.dart';
-import 'package:kncha_app/feautures/home/application/bloc/save_bloc/save_state.dart';
 import 'package:kncha_app/feautures/home/domain/models/court.dart';
 import 'package:kncha_app/feautures/home/presentation/widgets/dropdown_custom.dart';
 import 'package:kncha_app/feautures/home/presentation/widgets/textField_widget.dart';
 
 import '../../../../core/styles/styles.dart';
-import '../../application/bloc/save_bloc/save_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
@@ -37,10 +34,10 @@ class SaveForm extends StatefulWidget {
 
 class _SaveFormState extends State<SaveForm> {
   final _formKey = GlobalKey<FormState>();
- List courts = ["Cancha grande", "Cancha media", "Cancha peque"];
-    TextEditingController dateInput = TextEditingController(text: '');
-    TextEditingController userInput = TextEditingController(text: '');
-    TextEditingController courtInput = TextEditingController(text: '');
+  List courts = ["Cancha grande", "Cancha media", "Cancha peque"];
+  TextEditingController dateInput = TextEditingController(text: '');
+  TextEditingController userInput = TextEditingController(text: '');
+  TextEditingController courtInput = TextEditingController(text: '');
   @override
   void initState() {
     super.initState();
@@ -48,8 +45,6 @@ class _SaveFormState extends State<SaveForm> {
 
   @override
   Widget build(BuildContext context) {
-   
-
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         return Form(
@@ -61,7 +56,7 @@ class _SaveFormState extends State<SaveForm> {
                 TextFormFieldCustom(
                   controller: userInput,
                   hintText: 'Nombre del responsable',
-                                  labelText: '',
+                  labelText: '',
                 ),
                 SizedBox(
                   width: double.infinity,
@@ -121,12 +116,24 @@ class _SaveFormState extends State<SaveForm> {
                 SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                        onPressed: () {
-                          context.read<HomeBloc>().add(SaveCourtStarted(Court(
-                              court: courtInput.text,
-                              date: dateInput.text,
-                              user: userInput.text)));
-                          Navigator.pop(context);
+                        onPressed: () async {
+                          var coutn = await context
+                              .read<HomeBloc>()
+                              .getCountAndSum(courtInput.text);
+
+                          var vaialblecourt = 
+                          await context.read<HomeBloc>().isCourtAvailable(dateInput.text, courtInput.text);
+                          if (vaialblecourt == false) {
+                            showAlertDialog(context);
+                          } else {
+                            context.read<HomeBloc>().add(SaveCourtStarted(Court(
+                                  count: coutn,
+                                  court: courtInput.text,
+                                  date: dateInput.text,
+                                  user: userInput.text,
+                                )));
+                            Navigator.pop(context);
+                          }
                         },
                         child: const Text('Guardar')))
               ],
@@ -136,4 +143,31 @@ class _SaveFormState extends State<SaveForm> {
       },
     );
   }
+}
+
+showAlertDialog(BuildContext context) {
+  // set up the button
+  Widget okButton = TextButton(
+    child: Text("OK"),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text("Error"),
+    content: Text("Esta cancha ya no tiene cupo por hoy"),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:kncha_app/core/data/court_store.dart';
 import 'package:kncha_app/feautures/home/application/bloc/home_bloc.dart';
 import 'package:kncha_app/feautures/home/application/bloc/home_event.dart';
-import 'package:kncha_app/feautures/home/application/bloc/save_bloc/save_bloc.dart';
 import 'package:kncha_app/feautures/home/domain/models/court.dart';
 import 'package:kncha_app/feautures/home/presentation/pages/save_page.dart';
 import 'package:kncha_app/feautures/home/presentation/widgets/card_widget.dart';
@@ -35,7 +34,7 @@ class _HomePageState extends State<HomePage> {
         ),
         child: const Icon(Icons.add),
       ),
-      appBar: AppBar(),
+      appBar: AppBar(title: Text('Agenda de canchas'),centerTitle: true,),
       body: const SafeArea(
           child: Scaffold(
         body: SingleChildScrollView(
