@@ -54,6 +54,11 @@ class _SaveFormState extends State<SaveForm> {
             child: Column(
               children: [
                 TextFormFieldCustom(
+                  onChanged: (v) {
+                    setState(() {
+                      validateButtom();
+                    });
+                  },
                   controller: userInput,
                   hintText: 'Nombre del responsable',
                   labelText: '',
@@ -61,6 +66,11 @@ class _SaveFormState extends State<SaveForm> {
                 SizedBox(
                   width: double.infinity,
                   child: DropdownButtonFormField(
+                    onTap: () {
+                      setState(() {
+                        validateButtom();
+                      });
+                    },
                     hint: const Text('Selecciona cancha'),
                     // Down Arrow Icon
                     icon: Row(
@@ -72,6 +82,11 @@ class _SaveFormState extends State<SaveForm> {
                     // Array list of items
                     items: courts.map((items) {
                       return DropdownMenuItem<String>(
+                        onTap: () {
+                          setState(() {
+                            validateButtom();
+                          });
+                        },
                         value: items,
                         child: Text(items),
                       );
@@ -80,7 +95,7 @@ class _SaveFormState extends State<SaveForm> {
                     // change button value to selected value
                     onChanged: (String? newValue) {
                       setState(() {
-                        //ropdownvalue = newValue!;
+                        validateButtom();
                         courtInput.text = newValue ?? '';
                       });
                     },
@@ -96,6 +111,10 @@ class _SaveFormState extends State<SaveForm> {
                   readOnly: true,
                   //set it true, so that user will not able to edit text
                   onTap: () async {
+                    setState(() {
+                      validateButtom();
+                    });
+
                     DateTime? pickedDate = await showDatePicker(
                         context: context,
                         initialDate: DateTime.now(),
@@ -115,33 +134,65 @@ class _SaveFormState extends State<SaveForm> {
                 ),
                 SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-                        onPressed: () async {
-                          var coutn = await context
-                              .read<HomeBloc>()
-                              .getCountAndSum(courtInput.text);
+                    child: validateButtom() == false
+                        ? ElevatedButton(
+                            onPressed: () async {
+                              var coutn = await context
+                                  .read<HomeBloc>()
+                                  .getCountAndSum(courtInput.text);
 
-                          var vaialblecourt = 
-                          await context.read<HomeBloc>().isCourtAvailable(dateInput.text, courtInput.text);
-                          if (vaialblecourt == false) {
-                            showAlertDialog(context);
-                          } else {
-                            context.read<HomeBloc>().add(SaveCourtStarted(Court(
-                                  count: coutn,
-                                  court: courtInput.text,
-                                  date: dateInput.text,
-                                  user: userInput.text,
-                                )));
-                            Navigator.pop(context);
-                          }
-                        },
-                        child: const Text('Guardar')))
+                              var vaialblecourt = await context
+                                  .read<HomeBloc>()
+                                  .isCourtAvailable(
+                                      dateInput.text, courtInput.text);
+                              if (vaialblecourt == false) {
+                                showAlertDialog(context);
+                              } else {
+                                context
+                                    .read<HomeBloc>()
+                                    .add(SaveCourtStarted(Court(
+                                      count: coutn,
+                                      court: courtInput.text,
+                                      date: dateInput.text,
+                                      user: userInput.text,
+                                    )));
+                                Navigator.pop(context);
+                              }
+                            },
+                            child: const Text('Guardar'))
+                        : ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.resolveWith<Color?>(
+                                (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.disabled)) {
+                                    return Colors.grey;
+                                  }
+                                  return Colors.grey;
+                                },
+                              ),
+                            ),
+                            onPressed: () async {},
+                            child: const Text('Guardar')))
               ],
             ),
           ),
         );
       },
     );
+  }
+
+  bool validateButtom() {
+    var isActive = false;
+    if (dateInput.text.isNotEmpty &&
+        userInput.text.isNotEmpty &&
+        courtInput.text.isNotEmpty) {
+      isActive = false;
+    } else {
+      isActive = true;
+      ;
+    }
+    return isActive;
   }
 }
 

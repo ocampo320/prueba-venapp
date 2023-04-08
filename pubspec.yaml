@@ -64,6 +64,7 @@ dev_dependencies:
   dropdown_button2: ^1.9.2
   intl: ^0.18.0
   google_fonts: ^4.0.3
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

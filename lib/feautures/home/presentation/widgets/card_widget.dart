@@ -4,6 +4,7 @@ import 'package:kncha_app/feautures/home/application/bloc/home_event.dart';
 import 'package:kncha_app/feautures/home/application/bloc/home_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kncha_app/feautures/home/domain/models/court.dart';
+import 'package:kncha_app/feautures/home/domain/services/weather_map_services.dart';
 
 class CardWidget extends StatefulWidget {
   const CardWidget({super.key, this.nameCourt, this.date, this.userName});
@@ -42,6 +43,24 @@ class _CardWidgetState extends State<CardWidget> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
                                   ListTile(
+                                    title: FutureBuilder<String>(
+                                        future: WeatherMapServices
+                                            .getWeatherMapServices(
+                                                'city', e.date ?? ''),
+                                        builder: (context, snapshot) {
+                                          return snapshot.data!=null? Row(
+                                            children: [
+                                              const Padding(
+                                                padding:
+                                                    EdgeInsets.only(right: 10),
+                                                child:
+                                                    Icon(Icons.wb_cloudy_sharp,size: 25,),
+                                              ),
+                                              Text(
+                                                  snapshot.data.toString()),
+                                            ],
+                                          ):const SizedBox();
+                                        }),
                                     leading: const Padding(
                                       padding: EdgeInsets.only(top: 30),
                                       child: Icon(
@@ -71,7 +90,8 @@ class _CardWidgetState extends State<CardWidget> {
                                           child: ElevatedButton(
                                             child: const Text(
                                                 'Borrar el agendamiento'),
-                                            onPressed: ()=>showAlertDialog(context,e),
+                                            onPressed: () =>
+                                                showAlertDialog(context, e),
                                           ),
                                         ),
                                       ],
