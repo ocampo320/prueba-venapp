@@ -4,6 +4,7 @@ import 'package:kncha_app/feautures/home/presentation/pages/home_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'feautures/home/application/bloc/home_bloc.dart';
+import 'feautures/login/login_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.amber,
           ),
-          home: const HomePage(),
+          home: const LoginScreen(),
         ),
       ),
     );

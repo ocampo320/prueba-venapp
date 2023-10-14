@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kncha_app/core/color_manager.dart';
 import 'package:kncha_app/core/data/court_store.dart';
+import 'package:kncha_app/core/utils/app_typography.dart';
 import 'package:kncha_app/feautures/home/application/bloc/home_bloc.dart';
 import 'package:kncha_app/feautures/home/application/bloc/home_event.dart';
 import 'package:kncha_app/feautures/home/domain/models/court.dart';
@@ -18,7 +20,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    
   }
 
   @override
@@ -34,10 +35,22 @@ class _HomePageState extends State<HomePage> {
         ),
         child: const Icon(Icons.add),
       ),
-      appBar: AppBar(title: Text('Agenda de canchas'),centerTitle: true,),
-      body: const SafeArea(
+      appBar: AppBar(
+        backgroundColor: 
+        ColorManager.neutral600,
+        title: Text(
+          'Agenda de canchas',
+          style: AppTypography.stRaleway(
+            color: ColorManager.neutralWhite,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      body: SafeArea(
           child: Scaffold(
-        body: SingleChildScrollView(
+        backgroundColor: ColorManager.neutral600,
+        body: const SingleChildScrollView(
           child: CardWidget(),
         ),
       )),
